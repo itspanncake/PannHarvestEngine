@@ -31,6 +31,11 @@ public class PacketDisplay {
             s.setMarker(true);
             s.setCustomNameVisible(true);
             s.setGravity(false);
+            s.setBasePlate(false);
+            s.setSmall(true);
+            s.customName(net.kyori.adventure.text.Component.text(" "));
+
+            s.setPersistent(false);
         });
     }
 
