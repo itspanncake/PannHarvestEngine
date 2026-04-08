@@ -27,8 +27,9 @@ public class HarvestManager {
 
     public void handleInteract(Player player, Block block, ResourceBlock data) {
         HarvestSession session = activeSessions.get(player.getUniqueId());
+        String currentTool = PannHarvestEngine.get().getConfigManager().getToolId(player.getInventory().getItemInMainHand());
 
-        if (!data.whitelist().isEmpty()) {
+        if (!data.whitelist().isEmpty() && !data.whitelist().contains(currentTool)) {
             ItemStack item = player.getInventory().getItemInMainHand();
             String toolId = getToolId(item);
 

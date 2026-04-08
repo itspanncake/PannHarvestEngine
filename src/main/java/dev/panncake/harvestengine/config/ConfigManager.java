@@ -32,10 +32,12 @@ public class ConfigManager {
         resources.clear();
         toolPowers.clear();
 
+        plugin.getLogger().info("Start PannHarvestEngine Configuration Reload");
         loadTools();
         loadSettings();
         loadLang();
         loadResources();
+        plugin.getLogger().info("Configuration Reload Complete (" + resources.size() + " resources loaded)");
     }
 
     private void loadTools() {
@@ -43,8 +45,11 @@ public class ConfigManager {
         if (!file.exists()) plugin.saveResource("tools.yml", false);
 
         CommentedConfigurationNode node = loadFile(file.toPath());
-        node.node("tools").childrenMap().forEach((k, v) ->
-                toolPowers.put(k.toString(), v.getDouble(1.0)));
+        node.node("tools").childrenMap().forEach((k, v) -> {
+            double power = v.getDouble(1.0);
+            toolPowers.put(k.toString(), power);
+            plugin.getLogger().info("Tools loaded: " + k + " (Power: " + power + ")");
+        });
     }
 
     private void loadSettings() {
@@ -68,11 +73,18 @@ public class ConfigManager {
             plugin.saveResource("resources/ores.yml", false);
         }
 
-        for (File f : Objects.requireNonNull(folder.listFiles())) {
+        File[] files = folder.listFiles();
+        if (files == null) return;
+
+        for (File f : files) {
             if (!f.getName().endsWith(".yml")) continue;
             CommentedConfigurationNode node = loadFile(f.toPath());
+            int fileCount = 0;
 
-            node.node("resources").childrenMap().forEach((id, data) -> {
+            for (Map.Entry<Object, ? extends CommentedConfigurationNode> entry : node.node("resources").childrenMap().entrySet()) {
+                String id = entry.getKey().toString();
+                CommentedConfigurationNode data = entry.getValue();
+
                 List<LootEntry> loots = new ArrayList<>();
                 data.node("loots").childrenList().forEach(l -> loots.add(new LootEntry(
                         l.node("item").getString(),
@@ -85,17 +97,19 @@ public class ConfigManager {
                     List<String> whitelist = data.node("whitelist").getList(String.class);
                     if (whitelist == null) whitelist = new ArrayList<>();
 
-                    resources.put(id.toString(), new ResourceBlock(
-                            id.toString(),
+                    resources.put(id, new ResourceBlock(
+                            id,
                             data.node("hp").getDouble(10.0),
                             whitelist,
                             loots,
                             data.node("experience").getInt(0)
                     ));
+                    fileCount++;
                 } catch (SerializationException e) {
-                    plugin.getLogger().warning("Config error for block " + id + ": " + e.getMessage());
+                    plugin.getLogger().warning("Config error for block " + id + " in " + f.getName() + ": " + e.getMessage());
                 }
-            });
+            }
+            plugin.getLogger().info("Resources loaded " + fileCount + " entries from " + f.getName());
         }
     }
 
@@ -110,6 +124,12 @@ public class ConfigManager {
         CustomStack cs = CustomStack.byItemStack(item);
         String id = (cs != null) ? cs.getNamespacedID() : "minecraft:" + item.getType().name().toLowerCase();
         return toolPowers.getOrDefault(id, toolPowers.getOrDefault("HAND", 1.0));
+    }
+
+    public String getToolId(ItemStack item) {
+        if (item == null || item.getType().isAir()) return "HAND";
+        CustomStack cs = CustomStack.byItemStack(item);
+        return (cs != null) ? cs.getNamespacedID() : "minecraft:" + item.getType().name().toLowerCase();
     }
 
     public CommentedConfigurationNode getSettings() { return settingsNode; }
