@@ -6,6 +6,7 @@ import dev.panncake.harvestengine.models.LootEntry;
 import dev.panncake.harvestengine.models.ResourceBlock;
 import dev.panncake.harvestengine.util.InventoryUtil;
 import dev.panncake.harvestengine.util.LootFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -91,8 +92,17 @@ public class HarvestManager {
     public void tickCleanup() {
         long now = System.currentTimeMillis();
         activeSessions.entrySet().removeIf(entry -> {
-            if (now - entry.getValue().getLastHitTime() > 2000) {
-                entry.getValue().abort();
+            HarvestSession session = entry.getValue();
+            Player player = Bukkit.getPlayer(entry.getKey());
+
+            // TODO: add configuration for expired time (default 2s)
+            boolean expired = (now - session.getLastHitTime() > 2000);
+
+            boolean tooFar = (player == null || !player.isOnline() ||
+                    player.getLocation().distanceSquared(session.getBlock().getLocation()) > 36);
+
+            if (expired || tooFar) {
+                session.abort();
                 return true;
             }
             return false;
