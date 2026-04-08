@@ -13,6 +13,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onLeftClick(PlayerInteractEvent e) {
         if (e.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (e.getPlayer().getGameMode() == org.bukkit.GameMode.CREATIVE) return;
 
         Block block = e.getClickedBlock();
         if (block == null) return;
