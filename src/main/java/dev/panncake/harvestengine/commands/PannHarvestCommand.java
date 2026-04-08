@@ -3,6 +3,7 @@ package dev.panncake.harvestengine.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.panncake.harvestengine.commands.subcommands.*;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class PannHarvestCommand extends AbstractCommand {
     private final List<AbstractCommand> subCommands = List.of(
+            new ReloadSubCommand()
     );
 
     @Override
