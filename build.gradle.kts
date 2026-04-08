@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "dev.panncake.harvestengine"
-version = "1.1.1"
+version = "1.1.2"
 
 repositories {
     mavenCentral()
