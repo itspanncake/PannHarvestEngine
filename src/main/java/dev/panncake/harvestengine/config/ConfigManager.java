@@ -52,7 +52,7 @@ public class ConfigManager {
         if (!file.exists()) plugin.saveResource("settings.yml", false);
 
         settingsNode = loadFile(file.toPath());
-        this.hitCooldown = settingsNode.node("hit-cooldown").getDouble(0.5);
+        this.hitCooldown = settingsNode.node("settings", "hit-cooldown").getDouble(0.5);
     }
 
     private void loadLang() {

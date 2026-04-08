@@ -1,5 +1,6 @@
 package dev.panncake.harvestengine.display;
 
+import dev.panncake.harvestengine.PannHarvestEngine;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -20,13 +21,17 @@ public class PacketDisplay {
 
         stand.customName(title);
 
-        for (Player p : loc.getNearbyPlayers(20)) {
+        for (Player p : loc.getNearbyPlayers(PannHarvestEngine.get().getConfigManager().getSettings().node("settings", "packet-radius").getInt(20))) {
             p.sendBlockDamage(loc, progress, blockEntityId);
         }
     }
 
     private void spawnArmorStand() {
-        this.stand = loc.getWorld().spawn(loc.clone().add(0.5, 1.2, 0.5), ArmorStand.class, s -> {
+        this.stand = loc.getWorld().spawn(loc.clone().add(
+                0.5,
+                PannHarvestEngine.get().getConfigManager().getSettings().node("progress-bar", "offset-y").getDouble(1.3),
+                0.5
+        ), ArmorStand.class, s -> {
             s.setInvisible(true);
             s.setMarker(true);
             s.setCustomNameVisible(true);
@@ -41,7 +46,7 @@ public class PacketDisplay {
 
     public void destroy() {
         if (stand != null) stand.remove();
-        for (Player p : loc.getNearbyPlayers(20)) {
+        for (Player p : loc.getNearbyPlayers(PannHarvestEngine.get().getConfigManager().getSettings().node("settings", "packet-radius").getInt(20))) {
             p.sendBlockDamage(loc, 0f, blockEntityId);
         }
     }

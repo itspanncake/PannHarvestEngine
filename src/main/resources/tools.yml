@@ -1,4 +1,9 @@
+# Here you can define the tools and their corresponding mining speeds
+# The key is the tool's identifier (e.g., "HAND" for bare hands, or "minecraft:diamond_pickaxe" for a diamond pickaxe)
 tools:
+  # The mining speed when the player does not have any tool in their hand (bare hands)
   "HAND": 1.0
+  # The mining speed when the player is using a diamond pickaxe
   "minecraft:diamond_pickaxe": 2.5
+  # The mining speed when the player is using a custom mythril pickaxe (defined in itemsadder)
   "ia_custom_tools:mythril_pickaxe": 8.0

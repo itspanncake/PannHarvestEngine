@@ -1,15 +1,25 @@
 messages:
+  # The message sent to the player when they try to use a tool that is not allowed (referenced in the 'tools.yml')
   wrong-tool: "<red>Wrong tool! Please use another one."
-  inventory-full: "<red>Inventory is full!"
+  # The message sent when a player tries to break a block with their inventory full
+  inventory-full: "<red>Inventory full!"
 
 progress-bar:
-  offset-y: 1.3
-  length: 10
+  # The format for the progress bar
+  # Available placeholders:
+  # %bar% - The progress bar itself
+  # %percent% - The percentage of completion
   format: "<dark_gray>[%bar%<dark_gray>] <yellow>%percent%%"
+  # The characters used to represent the filled and empty parts of the progress bar
   chars:
+    # The character used to represent the filled part of the progress bar
     filled: "█"
+    # The character used to represent the empty part of the progress bar
     empty: "░"
   colors:
+    # The color when the progress is 75% or higher
     high: "<green>"
+    # The color when the progress is between 25% and 75%
     medium: "<yellow>"
+    # The color when the progress is below 25%
     low: "<gold>"

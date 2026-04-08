@@ -1,11 +1,17 @@
 resources:
+  # There is the 'ruby_ore' resource defined in itemsadder
   "ia_custom_minerals:ruby_ore":
+    # The health of the block, how many hits it takes to break it
     hp: 40.0
+    # All the tools that can break this block (use "HAND" for hand)
+    # Keep blank if you want to allow all tools
     whitelist:
       - "ia_custom_tools:mythril_pickaxe"
+    # The drops of the block, you can specify multiple drops with different chances
     loots:
       - item: "ia_custom_minerals:ruby_gem"
         min: 1
         max: 1
         chance: 100.0
+    # The experience given by the block when broken
     experience: 25

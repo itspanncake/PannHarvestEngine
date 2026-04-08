@@ -10,13 +10,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.*;
 
 public class HarvestManager {
     private static HarvestManager instance;
+
+    private final PannHarvestEngine plugin = PannHarvestEngine.get();
+
     private final Map<UUID, HarvestSession> activeSessions = new HashMap<>();
     private final Map<UUID, Long> cooldowns = new HashMap<>();
+
+    private final CommentedConfigurationNode settingsNode = plugin.getConfigManager().getSettings();
+    private final CommentedConfigurationNode langNode = plugin.getConfigManager().getLang();
 
     public void handleInteract(Player player, Block block, ResourceBlock data) {
         HarvestSession session = activeSessions.get(player.getUniqueId());
@@ -26,7 +33,7 @@ public class HarvestManager {
             String toolId = getToolId(item);
 
             if (!data.whitelist().contains(toolId)) {
-                String msg = PannHarvestEngine.get().getConfigManager().getLang().node("messages", "wrong-tool").getString("<red>Outil inadapté !");
+                String msg = langNode.node("messages", "wrong-tool").getString("<red>Wrong tool! Please use another one.");
                 player.sendRichMessage(msg);
                 return;
             }
@@ -62,7 +69,7 @@ public class HarvestManager {
         }
 
         if (!InventoryUtil.canFitAll(player, loots)) {
-            player.sendRichMessage(Objects.requireNonNull(PannHarvestEngine.get().getConfigManager().getLang().node("messages", "inventory-full").getString()));
+            player.sendRichMessage(langNode.node("messages", "inventory-full").getString("<red>Inventory full!"));
             session.abort();
             activeSessions.remove(player.getUniqueId());
             return;
@@ -73,7 +80,11 @@ public class HarvestManager {
 
         session.getBlock().setType(org.bukkit.Material.AIR);
 
-        player.playSound(player.getLocation(), "minecraft:block.stone.break", 1.0f, 1.0f);
+        player.playSound(player.getLocation(),
+                settingsNode.node("sounds", "block-break", "sound").getString("minecraft:block.stone.break"),
+                settingsNode.node("sounds", "block-break", "volume").getFloat(1.0f),
+                settingsNode.node("sounds", "block-break", "pitch").getFloat(1.0f)
+        );
 
         session.abort();
         activeSessions.remove(player.getUniqueId());
@@ -95,11 +106,10 @@ public class HarvestManager {
             HarvestSession session = entry.getValue();
             Player player = Bukkit.getPlayer(entry.getKey());
 
-            // TODO: add configuration for expired time (default 2s)
-            boolean expired = (now - session.getLastHitTime() > 2000);
+            boolean expired = (now - session.getLastHitTime() > (settingsNode.node("settings", "expiration").getInt(2) * 1000L));
 
             boolean tooFar = (player == null || !player.isOnline() ||
-                    player.getLocation().distanceSquared(session.getBlock().getLocation()) > 36);
+                    player.getLocation().distanceSquared(session.getBlock().getLocation()) > (settingsNode.node("settings", "max-distance").getInt(6) * 6));
 
             if (expired || tooFar) {
                 session.abort();
