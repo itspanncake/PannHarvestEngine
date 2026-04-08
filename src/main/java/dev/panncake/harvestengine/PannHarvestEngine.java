@@ -2,6 +2,8 @@ package dev.panncake.harvestengine;
 
 import dev.panncake.harvestengine.config.ConfigManager;
 import dev.panncake.harvestengine.core.HarvestManager;
+import dev.panncake.harvestengine.listeners.PlayerInteractListener;
+import dev.panncake.harvestengine.listeners.PlayerStateListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PannHarvestEngine extends JavaPlugin {
@@ -19,6 +21,9 @@ public class PannHarvestEngine extends JavaPlugin {
         this.configManager.reloadAll();
 
         this.harvestManager = new HarvestManager();
+
+        getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerStateListener(), this);
 
         getServer().getScheduler().runTaskTimer(this, () ->
                 harvestManager.tickCleanup(), 20L, 20L);
