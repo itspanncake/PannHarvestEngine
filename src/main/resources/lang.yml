@@ -3,12 +3,13 @@ messages:
   inventory-full: "<red>Inventory is full!"
 
 progress-bar:
-  offset-y: 1.5
-  total-segments: 10
-  format: "<dark_gray>« %bar% <dark_gray>» <yellow>%percent%%"
-  filled-char: "█"
-  empty-char: "▒"
+  offset-y: 1.3
+  length: 10
+  format: "<dark_gray>[%bar%<dark_gray>] <yellow>%percent%%"
+  chars:
+    filled: "█"
+    empty: "░"
   colors:
-    high: "<gradient:green:dark_green>"
-    medium: "<gradient:yellow:gold>"
-    low: "<gradient:red:dark_red>"
+    high: "<green>"
+    medium: "<yellow>"
+    low: "<gold>"
