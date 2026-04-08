@@ -1,0 +1,14 @@
+messages:
+  wrong-tool: "<red>Wrong tool! Please use another one."
+  inventory-full: "<red>Inventory is full!"
+
+progress-bar:
+  offset-y: 1.5
+  total-segments: 10
+  format: "<dark_gray>« %bar% <dark_gray>» <yellow>%percent%%"
+  filled-char: "█"
+  empty-char: "▒"
+  colors:
+    high: "<gradient:green:dark_green>"
+    medium: "<gradient:yellow:gold>"
+    low: "<gradient:red:dark_red>"
