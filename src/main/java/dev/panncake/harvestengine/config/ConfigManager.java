@@ -20,6 +20,7 @@ public class ConfigManager {
     private final Map<String, ResourceBlock> resources = new HashMap<>();
     private final Map<String, Double> toolPowers = new HashMap<>();
     private CommentedConfigurationNode langNode;
+    private double hitCooldown;
 
     public ConfigManager(PannHarvestEngine plugin) {
         this.plugin = plugin;
@@ -30,6 +31,7 @@ public class ConfigManager {
         toolPowers.clear();
 
         loadTools();
+        loadSettings();
         loadLang();
         loadResources();
     }
@@ -41,6 +43,14 @@ public class ConfigManager {
         CommentedConfigurationNode node = loadFile(file.toPath());
         node.node("tools").childrenMap().forEach((k, v) ->
                 toolPowers.put(k.toString(), v.getDouble(1.0)));
+    }
+
+    private void loadSettings() {
+        File file = new File(plugin.getDataFolder(), "settings.yml");
+        if (!file.exists()) plugin.saveResource("settings.yml", false);
+
+        CommentedConfigurationNode node = loadFile(file.toPath());
+        this.hitCooldown = node.node("settings", "hit-cooldown").getDouble(0.5);
     }
 
     private void loadLang() {
@@ -103,6 +113,8 @@ public class ConfigManager {
     public CommentedConfigurationNode getLang() { return langNode; }
 
     public boolean isResource(Block block) { return getResource(block) != null; }
+
+    public double getHitCooldown() { return hitCooldown; }
 
     private CommentedConfigurationNode loadFile(Path path) {
         try {

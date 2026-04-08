@@ -15,6 +15,7 @@ import java.util.*;
 public class HarvestManager {
     private static HarvestManager instance;
     private final Map<UUID, HarvestSession> activeSessions = new HashMap<>();
+    private final Map<UUID, Long> cooldowns = new HashMap<>();
 
     public void handleInteract(Player player, Block block, ResourceBlock data) {
         HarvestSession session = activeSessions.get(player.getUniqueId());
@@ -30,6 +31,12 @@ public class HarvestManager {
             }
         }
 
+        long now = System.currentTimeMillis();
+        long lastHit = cooldowns.getOrDefault(player.getUniqueId(), 0L);
+        double cooldownMillis = PannHarvestEngine.get().getConfigManager().getHitCooldown() * 1000;
+
+        if (now - lastHit < cooldownMillis) return;
+
         if (session != null && !session.getBlock().getLocation().equals(block.getLocation())) {
             session.abort();
             session = null;
@@ -41,6 +48,7 @@ public class HarvestManager {
         }
 
         session.hit(PannHarvestEngine.get().getConfigManager().getToolPower(player.getInventory().getItemInMainHand()));
+        cooldowns.put(player.getUniqueId(), now);
     }
 
     public void completeSession(Player player, HarvestSession session) {
