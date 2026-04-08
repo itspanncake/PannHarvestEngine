@@ -42,7 +42,7 @@ paper {
 
     serverDependencies {
         register("ItemsAdder") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
         }
     }
 }
