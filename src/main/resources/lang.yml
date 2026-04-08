@@ -1,8 +1,12 @@
 messages:
   # The message sent to the player when they try to use a tool that is not allowed (referenced in the 'tools.yml')
   wrong-tool: "<red>Wrong tool! Please use another one."
-  # The message sent when a player tries to break a block with their inventory full
-  inventory-full: "<red>Inventory full!"
+
+titles:
+  # The title shown when a player tries to break a block with their inventory full
+  inventory-full:
+    title: "<red>Your inventory is full!"
+    subtitle: "<gray>Clear some space to break blocks"
 
 progress-bar:
   # The format for the progress bar
