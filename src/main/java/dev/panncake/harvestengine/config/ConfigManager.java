@@ -1,7 +1,6 @@
 package dev.panncake.harvestengine.config;
 
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomStack;
+import dev.panncake.harvestengine.ItemsAdderHook;
 import dev.panncake.harvestengine.PannHarvestEngine;
 import dev.panncake.harvestengine.models.LootEntry;
 import dev.panncake.harvestengine.models.ResourceBlock;
@@ -114,22 +113,37 @@ public class ConfigManager {
     }
 
     public ResourceBlock getResource(Block block) {
-        CustomBlock cb = CustomBlock.byAlreadyPlaced(block);
-        String id = (cb != null) ? cb.getNamespacedID() : block.getType().getKey().toString();
+        String id = ItemsAdderHook.getCustomBlockId(block);
+
+        if (id == null) {
+            id = block.getType().getKey().toString();
+        }
+
         return resources.get(id);
     }
 
     public double getToolPower(ItemStack item) {
         if (item == null || item.getType().isAir()) return toolPowers.getOrDefault("HAND", 1.0);
-        CustomStack cs = CustomStack.byItemStack(item);
-        String id = (cs != null) ? cs.getNamespacedID() : "minecraft:" + item.getType().name().toLowerCase();
+
+        String id = ItemsAdderHook.getCustomItemId(item);
+
+        if (id == null) {
+            id = item.getType().getKey().toString();
+        }
+
         return toolPowers.getOrDefault(id, toolPowers.getOrDefault("HAND", 1.0));
     }
 
     public String getToolId(ItemStack item) {
         if (item == null || item.getType().isAir()) return "HAND";
-        CustomStack cs = CustomStack.byItemStack(item);
-        return (cs != null) ? cs.getNamespacedID() : "minecraft:" + item.getType().name().toLowerCase();
+
+        String id = ItemsAdderHook.getCustomItemId(item);
+
+        if (id == null) {
+            id = item.getType().getKey().toString();
+        }
+
+        return id;
     }
 
     public CommentedConfigurationNode getSettings() { return settingsNode; }

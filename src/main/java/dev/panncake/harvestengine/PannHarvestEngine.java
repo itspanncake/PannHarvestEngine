@@ -21,6 +21,10 @@ public class PannHarvestEngine extends JavaPlugin {
         this.configManager = new ConfigManager(this);
         this.configManager.reloadAll();
 
+        if (ItemsAdderHook.notFound()) {
+            getLogger().warning("ItemsAdder not found! Custom blocks, tools, and loot features are not enabled.");
+        }
+
         this.harvestManager = HarvestManager.getInstance();
 
         CommandManager.register();
