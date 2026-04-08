@@ -105,7 +105,8 @@ public class HarvestManager {
             boolean expired = (now - session.getLastHitTime() > (settingsNode.node("settings", "expiration").getInt(2) * 1000L));
 
             boolean tooFar = (player == null || !player.isOnline() ||
-                    player.getLocation().distanceSquared(session.getBlock().getLocation()) > (settingsNode.node("settings", "max-distance").getInt(6) * 6));
+                    player.getLocation().distanceSquared(session.getBlock().getLocation()) >
+                            Math.pow(settingsNode.node("settings", "max-distance").getInt(6), 2));
 
             if (expired || tooFar) {
                 session.abort();
@@ -113,12 +114,6 @@ public class HarvestManager {
             }
             return false;
         });
-    }
-
-    private String getToolId(ItemStack item) {
-        if (item == null || item.getType().isAir()) return "HAND";
-        CustomStack cs = CustomStack.byItemStack(item);
-        return (cs != null) ? cs.getNamespacedID() : "minecraft:" + item.getType().name().toLowerCase();
     }
 
     public static HarvestManager getInstance() {

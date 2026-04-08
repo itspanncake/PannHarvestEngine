@@ -21,7 +21,7 @@ public class PannHarvestEngine extends JavaPlugin {
         this.configManager = new ConfigManager(this);
         this.configManager.reloadAll();
 
-        this.harvestManager = new HarvestManager();
+        this.harvestManager = HarvestManager.getInstance();
 
         CommandManager.register();
 
