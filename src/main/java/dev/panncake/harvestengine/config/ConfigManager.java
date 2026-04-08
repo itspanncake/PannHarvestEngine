@@ -115,7 +115,7 @@ public class ConfigManager {
 
     public ResourceBlock getResource(Block block) {
         CustomBlock cb = CustomBlock.byAlreadyPlaced(block);
-        String id = (cb != null) ? cb.getNamespacedID() : "minecraft:" + block.getType().name().toLowerCase();
+        String id = (cb != null) ? cb.getNamespacedID() : block.getType().getKey().toString();
         return resources.get(id);
     }
 
