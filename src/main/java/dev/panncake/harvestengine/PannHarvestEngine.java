@@ -1,5 +1,6 @@
 package dev.panncake.harvestengine;
 
+import dev.panncake.harvestengine.commands.CommandManager;
 import dev.panncake.harvestengine.config.ConfigManager;
 import dev.panncake.harvestengine.core.HarvestManager;
 import dev.panncake.harvestengine.listeners.PlayerInteractListener;
@@ -21,6 +22,8 @@ public class PannHarvestEngine extends JavaPlugin {
         this.configManager.reloadAll();
 
         this.harvestManager = new HarvestManager();
+
+        CommandManager.register();
 
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerStateListener(), this);
