@@ -46,3 +46,18 @@ paper {
         }
     }
 }
+
+tasks {
+    shadowJar {
+        archiveClassifier.set("")
+        archiveVersion.set("")
+
+        relocate("dev.dejvokep.boostedyaml", "dev.panncake.harvestengine.libs")
+
+        minimize()
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
+}
