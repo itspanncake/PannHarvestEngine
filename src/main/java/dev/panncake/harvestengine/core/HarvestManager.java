@@ -6,6 +6,7 @@ import dev.panncake.harvestengine.models.LootEntry;
 import dev.panncake.harvestengine.models.ResourceBlock;
 import dev.panncake.harvestengine.util.InventoryUtil;
 import dev.panncake.harvestengine.util.LootFactory;
+import dev.panncake.harvestengine.util.TitlesUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,20 +27,32 @@ public class HarvestManager {
     private final CommentedConfigurationNode langNode = plugin.getConfigManager().getLang();
 
     public void handleInteract(Player player, Block block, ResourceBlock data) {
-        HarvestSession session = activeSessions.get(player.getUniqueId());
-        String currentTool = PannHarvestEngine.get().getConfigManager().getToolId(player.getInventory().getItemInMainHand());
-
+        String currentTool = plugin.getConfigManager().getToolId(player.getInventory().getItemInMainHand());
         if (!data.whitelist().isEmpty() && !data.whitelist().contains(currentTool)) {
             String msg = langNode.node("messages", "wrong-tool").getString("<red>Wrong tool!");
             player.sendRichMessage(msg);
             return;
         }
 
+        List<ItemStack> potentialLoots = new ArrayList<>();
+        for (LootEntry entry : data.loots()) {
+            ItemStack item = LootFactory.create(entry);
+            if (item != null) potentialLoots.add(item);
+        }
+
+        if (!InventoryUtil.canFitAll(player, potentialLoots)) {
+            TitlesUtil.showInventoryFull(player);
+            stopSession(player);
+            return;
+        }
+
         long now = System.currentTimeMillis();
         long lastHit = cooldowns.getOrDefault(player.getUniqueId(), 0L);
-        double cooldownMillis = PannHarvestEngine.get().getConfigManager().getHitCooldown() * 1000;
+        double cooldownMillis = plugin.getConfigManager().getHitCooldown() * 1000;
 
         if (now - lastHit < cooldownMillis) return;
+
+        HarvestSession session = activeSessions.get(player.getUniqueId());
 
         if (session != null && !session.getBlock().getLocation().equals(block.getLocation())) {
             session.abort();
@@ -51,7 +64,7 @@ public class HarvestManager {
             activeSessions.put(player.getUniqueId(), session);
         }
 
-        session.hit(PannHarvestEngine.get().getConfigManager().getToolPower(player.getInventory().getItemInMainHand()));
+        session.hit(plugin.getConfigManager().getToolPower(player.getInventory().getItemInMainHand()));
         cooldowns.put(player.getUniqueId(), now);
     }
 
@@ -65,7 +78,7 @@ public class HarvestManager {
         }
 
         if (!InventoryUtil.canFitAll(player, loots)) {
-            player.sendRichMessage(langNode.node("messages", "inventory-full").getString("<red>Inventory full!"));
+            TitlesUtil.showInventoryFull(player);
             session.abort();
             activeSessions.remove(player.getUniqueId());
             return;
