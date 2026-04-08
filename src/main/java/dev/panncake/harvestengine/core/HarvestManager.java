@@ -30,14 +30,9 @@ public class HarvestManager {
         String currentTool = PannHarvestEngine.get().getConfigManager().getToolId(player.getInventory().getItemInMainHand());
 
         if (!data.whitelist().isEmpty() && !data.whitelist().contains(currentTool)) {
-            ItemStack item = player.getInventory().getItemInMainHand();
-            String toolId = getToolId(item);
-
-            if (!data.whitelist().contains(toolId)) {
-                String msg = langNode.node("messages", "wrong-tool").getString("<red>Wrong tool! Please use another one.");
-                player.sendRichMessage(msg);
-                return;
-            }
+            String msg = langNode.node("messages", "wrong-tool").getString("<red>Wrong tool!");
+            player.sendRichMessage(msg);
+            return;
         }
 
         long now = System.currentTimeMillis();
