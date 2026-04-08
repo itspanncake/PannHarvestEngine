@@ -1,11 +1,13 @@
 package dev.panncake.harvestengine;
 
 import dev.panncake.harvestengine.config.ConfigManager;
+import dev.panncake.harvestengine.core.HarvestManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PannHarvestEngine extends JavaPlugin {
     private static PannHarvestEngine instance;
     private ConfigManager configManager;
+    private HarvestManager harvestManager;
 
     @Override
     public void onEnable() {
@@ -15,6 +17,11 @@ public class PannHarvestEngine extends JavaPlugin {
 
         this.configManager = new ConfigManager(this);
         this.configManager.reloadAll();
+
+        this.harvestManager = new HarvestManager();
+
+        getServer().getScheduler().runTaskTimer(this, () ->
+                harvestManager.tickCleanup(), 20L, 20L);
 
         getLogger().info("Plugin has been enabled!");
     }
@@ -33,4 +40,5 @@ public class PannHarvestEngine extends JavaPlugin {
     /* GETTERS */
     public static PannHarvestEngine get() { return instance; }
     public ConfigManager getConfigManager() { return configManager; }
+    public HarvestManager getHarvestManager() { return harvestManager; }
 }
