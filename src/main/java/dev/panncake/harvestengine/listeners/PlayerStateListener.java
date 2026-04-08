@@ -1,6 +1,7 @@
 package dev.panncake.harvestengine.listeners;
 
 import dev.panncake.harvestengine.PannHarvestEngine;
+import dev.panncake.harvestengine.core.HarvestManager;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +36,8 @@ public class PlayerStateListener implements Listener {
         if (e.getFrom().getBlockX() != e.getTo().getBlockX() ||
                 e.getFrom().getBlockZ() != e.getTo().getBlockZ() ||
                 e.getFrom().getBlockY() != e.getTo().getBlockY()) {
-            PannHarvestEngine.get().getHarvestManager().stopSession(e.getPlayer());
+
+            HarvestManager.getInstance().stopSession(e.getPlayer());
         }
     }
 
