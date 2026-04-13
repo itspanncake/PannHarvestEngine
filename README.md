@@ -23,7 +23,7 @@ Featuring per-tool damage scaling, **multi-file configuration**, and a "packet-b
 
 ### 🧰 Compatibility
 
-**Works with vanilla blocks and tools, but you can also use custom resources with <a href="https://builtbybit.com/resources/itemsadder.10839/">ItemsAdder</a>.**
+**Works with vanilla blocks and tools, but you can also use custom resources with <a href="https://builtbybit.com/resources/itemsadder.10839/">ItemsAdder</a> !**
 
 | Platform | Status | Version |
 | :--- | :---: | :---: |
